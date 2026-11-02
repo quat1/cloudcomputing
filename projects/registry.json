@@ -1,0 +1,69 @@
+{
+  "$comment": "Реестр проектов. name — короткое имя для команд и агентов; dir — папка в workspace/; agent — какой субагент отвечает за проект.",
+  "owner": "quat1",
+  "projects": [
+    {
+      "name": "zerdeli",
+      "dir": "zerdeli-website",
+      "repo": "https://github.com/quat1/zerdeli-website",
+      "agent": "zerdeli-dev",
+      "status": "active",
+      "stack": "Next.js 16 · React 19 · TypeScript · Tailwind 4 · Supabase · next-intl · TipTap · Vercel",
+      "summary": "Сайт школы Zerdeli на трёх языках (kk/ru/en) с админкой для сотрудников."
+    },
+    {
+      "name": "aqbota",
+      "dir": "aqbota_repo",
+      "repo": "https://github.com/quat1/aqbota_repo",
+      "agent": "aqbota-dev",
+      "status": "active",
+      "stack": "Flutter 3.41 (FVM) · Dart 3 · pub workspace · BLoC · auto_route · drift · Firebase · Supabase",
+      "summary": "Монорепо мобильных приложений (learn_ai, tempo, zholda, studyscroll, mama_plus, sana, vibe_kanban, lang_journal, adm_app) и общих пакетов meezy_core / meezy_ui."
+    },
+    {
+      "name": "torge",
+      "dir": "torgekz",
+      "repo": "https://github.com/quat1/torgekz",
+      "agent": "torge-dev",
+      "status": "design",
+      "stack": "пока только дизайн (HTML-экспорт канваса); кода нет",
+      "summary": "törge — B2B-площадка предзаказов и закупок для продавцов (референс Kaspi): кабинет продавца, ставки, договоры, онбординг."
+    },
+    {
+      "name": "keysora",
+      "dir": "keysora",
+      "repo": "https://github.com/quat1/keysora",
+      "agent": "keysora-dev",
+      "status": "empty",
+      "stack": "не выбран",
+      "summary": "Проект компании Keysora. Репозиторий пустой — агент помогает начать."
+    },
+    {
+      "name": "qep",
+      "dir": "qep",
+      "repo": "https://github.com/quat1/qep",
+      "agent": "qep-dev",
+      "status": "active",
+      "stack": "НЕ ИЗУЧЕН — заполнить (см. .claude/agents/qep-dev.md)",
+      "summary": "Самый свежий по коммитам проект. Доступ к репозиторию при создании агентов не был выдан — описание нужно дополнить."
+    },
+    {
+      "name": "nextjs-boilerplate",
+      "dir": "nextjs-boilerplate",
+      "repo": "https://github.com/quat1/nextjs-boilerplate",
+      "agent": "web-dev",
+      "status": "template",
+      "stack": "Next.js 15.5 · React 19 · Tailwind 4 · Turbopack",
+      "summary": "Чистый шаблон create-next-app для новых веб-проектов."
+    },
+    {
+      "name": "qrgpt",
+      "dir": "qrgpt1234",
+      "repo": "https://github.com/quat1/qrgpt1234",
+      "agent": "web-dev",
+      "status": "experiment",
+      "stack": "Next.js 13.5 · Replicate · Vercel KV/Blob · shadcn/ui · Tailwind 3",
+      "summary": "Форк qrGPT — генерация AI QR-кодов."
+    }
+  ]
+}

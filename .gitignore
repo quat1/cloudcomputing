@@ -1,0 +1,8 @@
+# локальные клоны проектов (см. scripts/clone.sh)
+workspace/
+# служебные файлы
+.DS_Store
+*.log
+.env
+.env.*
+!.env.example
