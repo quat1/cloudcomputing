@@ -1,0 +1,9 @@
+schema_version: "1.1"
+name: saas-landing-page-audit
+expected_outcome: |
+  A CRO audit report that runs the five-second test, scores the seven dimensions, and gives
+  specific fixes. It rewrites the headline (three options, one recommended, matched to the
+  "salon appointment scheduling" ad traffic), replaces "Sign Up" / "Submit" with
+  action-plus-outcome button copy, and cuts the eight-field form to about three fields with
+  reasons for each removal. Findings are written as Issue / Why / Fix / Priority / Effort,
+  and the report is saved as a markdown file.

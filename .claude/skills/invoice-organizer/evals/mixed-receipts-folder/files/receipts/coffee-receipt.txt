@@ -1,0 +1,10 @@
+BLUE BOTTLE COFFEE
+5 Main St
+2024/04/02 08:14
+Latte 2 x 5.25   10.50
+Croissant        4.00
+SUBTOTAL 14.50
+TAX 1.23
+TOTAL 15.73
+VISA ****1234
+Thank you

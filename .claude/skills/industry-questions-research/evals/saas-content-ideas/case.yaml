@@ -1,0 +1,8 @@
+schema_version: "1.1"
+name: saas-content-ideas
+expected_outcome: |
+  A markdown report and a CSV of content ideas for a bookkeeping firm serving ecommerce
+  sellers. The ideas trace back to real, recent (roughly last 30 days) questions from
+  sources like Reddit, forums, or review sites, each with a URL. Ideas are grouped by
+  theme, ranked, and each one names a format (LinkedIn post or blog), a hook, and the
+  question that inspired it. The report says which sources were covered and the date window.

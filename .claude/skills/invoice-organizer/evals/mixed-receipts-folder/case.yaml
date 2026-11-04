@@ -1,0 +1,12 @@
+schema_version: "1.1"
+name: mixed-receipts-folder
+expected_outcome: |
+  The receipts folder is scanned with the bundled script using day-first dates, the photo
+  receipt (which has no text layer) is read by eye and its fields filled in, the duplicate
+  Uber receipt in the subfolder is skipped, and the files are copied (not moved) into a
+  dated folder structure with names like 2024-03-15_Acme-Cloud-Services_92.23-USD.pdf.
+  A spreadsheet lists every receipt with date, vendor, amount, currency and category and a
+  total; the originals are unchanged; the user gets a short summary with totals and any
+  remaining flags.
+context:
+  scaffold_script: place-files.sh
