@@ -1,0 +1,354 @@
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>CJM История авто</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=Onest:wght@600;800&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+  /* Layout: two horizontal journey grids (stages as columns, lanes as rows), each in its own scroller; a delta table closes the page. */
+  :root {
+    --bg: #f2f5f9; --surface: #ffffff; --surface-2: #e9eef4; --fg: #16212d; --muted: #5d6c7d; --line: #d3dbe4;
+    --accent: #0b57c9; --accent-soft: #e3edfb;
+    --pain: #c7362b; --pain-soft: #fbe9e6; --gain: #177a4f; --gain-soft: #e2f4ea; --warn: #b8720b; --warn-soft: #fbefd9;
+    --font-display: 'Onest', 'Golos Text', system-ui, sans-serif;
+    --font-body: 'Golos Text', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e141b; --surface: #161e27; --surface-2: #1f2932; --fg: #e7ecf1; --muted: #97a5b4; --line: #2c3844;
+      --accent: #79abff; --accent-soft: #17304f;
+      --pain: #ff7a6e; --pain-soft: #3b1f1c; --gain: #5ed39a; --gain-soft: #163626; --warn: #f0b24d; --warn-soft: #3a2c12;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e141b; --surface: #161e27; --surface-2: #1f2932; --fg: #e7ecf1; --muted: #97a5b4; --line: #2c3844;
+    --accent: #79abff; --accent-soft: #17304f;
+    --pain: #ff7a6e; --pain-soft: #3b1f1c; --gain: #5ed39a; --gain-soft: #163626; --warn: #f0b24d; --warn-soft: #3a2c12;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 14px; line-height: 1.45;
+    padding-block: 28px 56px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
+  h1 { font-size: clamp(24px, 3.4vw, 36px); font-weight: 800; line-height: 1.12; letter-spacing: -0.01em; }
+  h2 { font-size: clamp(19px, 2.4vw, 26px); font-weight: 800; line-height: 1.2; }
+  h3 { font-size: 14px; font-weight: 600; line-height: 1.3; }
+  p { margin: 0; }
+  a { color: var(--accent); }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .wrap { max-width: 1480px; margin-inline: auto; display: grid; gap: 36px; }
+
+  .hero { display: grid; gap: 14px; max-width: 880px; }
+  .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .lead { font-size: 15px; color: var(--muted); max-width: 66ch; }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; padding: 4px 10px; border-radius: 999px; background: var(--surface-2); color: var(--fg); }
+  .chip i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .chip.pain { background: var(--pain-soft); } .chip.pain i { background: var(--pain); }
+  .chip.gain { background: var(--gain-soft); } .chip.gain i { background: var(--gain); }
+  .chip.warn { background: var(--warn-soft); } .chip.warn i { background: var(--warn); }
+  .chip.acc { background: var(--accent-soft); } .chip.acc i { background: var(--accent); }
+  .jump { display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; font-weight: 500; }
+
+  .map { display: grid; gap: 16px; }
+  .map-head { display: grid; gap: 8px; max-width: 880px; }
+  .tag { display: inline-flex; align-items: center; gap: 8px; width: fit-content; font-family: var(--font-display); font-size: 12px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; padding: 5px 10px; border-radius: 6px; }
+  .tag-now { background: var(--warn-soft); color: var(--warn); }
+  .tag-next { background: var(--gain-soft); color: var(--gain); }
+  .map-head p { color: var(--muted); max-width: 70ch; }
+
+  .scroller { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+  .grid { display: grid; grid-template-columns: 112px repeat(6, 236px); gap: 1px; background: var(--line); width: max-content; min-width: 100%; }
+  @media (min-width: 1480px) { .grid { grid-template-columns: 128px repeat(6, minmax(0, 1fr)); width: 100%; } }
+  .grid > * { background: var(--surface); min-width: 0; }
+  .lane { position: sticky; left: 0; z-index: 2; padding: 12px 10px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); display: flex; align-items: flex-start; box-shadow: 1px 0 0 var(--line); }
+  .corner { background: var(--surface-2); }
+  .stage { background: var(--surface-2); padding: 12px 14px; display: grid; gap: 4px; align-content: start; }
+  .stage .num { font-family: var(--font-mono); font-size: 11px; color: var(--accent); font-weight: 500; }
+  .stage .where { font-size: 12px; color: var(--muted); }
+  .cell { padding: 12px 14px; font-size: 13px; display: grid; gap: 6px; align-content: start; }
+  .cell ul { margin: 0; padding-left: 16px; display: grid; gap: 4px; }
+  .cell .q { font-style: italic; color: var(--fg); }
+  .cell .q::before { content: "«"; } .cell .q::after { content: "»"; }
+  .cell.pain { background: var(--pain-soft); }
+  .cell.gain { background: var(--gain-soft); }
+  .cell.emo { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 10px; }
+  .face { font-size: 26px; line-height: 1; }
+  .emo .lvl { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+  .curve-wrap { grid-column: 2 / -1; padding: 6px 0; }
+  .curve { display: block; width: 100%; height: 72px; }
+  .curve .mid { stroke: var(--line); stroke-dasharray: 4 4; }
+  .pay { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 999px; width: fit-content; }
+  .pay.none { background: var(--surface-2); color: var(--muted); }
+  .pay.client { background: var(--accent-soft); color: var(--accent); }
+  .pay.retail { background: var(--warn-soft); color: var(--warn); }
+  .pay .amt { font-family: var(--font-mono); font-weight: 500; }
+  .ev { font-family: var(--font-mono); font-size: 11.5px; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; white-space: nowrap; }
+  .risk { border-top: 3px solid var(--pain); }
+  .safe { border-top: 3px solid var(--gain); }
+
+  .delta { display: grid; gap: 16px; }
+  .delta-head { max-width: 880px; display: grid; gap: 8px; }
+  .delta-head p { color: var(--muted); }
+  .tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 13px; }
+  th, td { text-align: left; vertical-align: top; padding: 11px 14px; border-bottom: 1px solid var(--line); }
+  th { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); background: var(--surface-2); }
+  tr:last-child td { border-bottom: 0; }
+  td.now { color: var(--muted); }
+  td.next { font-weight: 500; }
+  td:first-child { font-weight: 600; width: 22%; }
+
+  .takeaways { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  @media (max-width: 760px) { .takeaways { grid-template-columns: 1fr; } }
+  .take { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 8px; }
+  .take h3 { font-size: 15px; }
+  .take p { color: var(--muted); font-size: 13px; }
+  .take .big { font-family: var(--font-display); font-size: 24px; font-weight: 800; color: var(--fg); font-variant-numeric: tabular-nums; }
+
+  footer { font-size: 12px; color: var(--muted); max-width: 70ch; display: grid; gap: 6px; }
+  @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+
+<div class="wrap">
+
+  <header class="hero">
+    <p class="eyebrow">Переоформление авто · приложение БЦК · Autocheck B2B API</p>
+    <h1>CJM: история авто при покупке машины с пробегом</h1>
+    <p class="lead">Персона: покупатель авто с пробегом, который проводит сделку через «Переоформление авто». Две карты по шесть этапов: как клиент проверяет историю сегодня и как это будет, когда Autocheck встроен в приложение. Второй персонаж, продавец, появляется на этапе сделки.</p>
+    <div class="legend">
+      <span class="chip pain"><i></i>Боль</span>
+      <span class="chip gain"><i></i>Что нового</span>
+      <span class="chip warn"><i></i>Платит Розница</span>
+      <span class="chip acc"><i></i>Платит клиент</span>
+      <span class="chip"><i style="background:var(--muted)"></i>Не платит никто</span>
+      <span class="chip"><span class="ev">event.name</span>Метрика из плана аналитики</span>
+    </div>
+    <nav class="jump" aria-label="Разделы">
+      <a href="#as-is">Как сейчас</a>
+      <a href="#to-be">Как будет с Autocheck</a>
+      <a href="#delta">Что меняется</a>
+    </nav>
+  </header>
+
+  <!-- ===================== AS IS ===================== -->
+  <section class="map" id="as-is">
+    <div class="map-head">
+      <span class="tag tag-now">Как сейчас</span>
+      <h2>Проверка истории живёт вне банка и заканчивается до самого рискованного шага</h2>
+      <p>Клиент собирает историю авто по трём-четырём источникам, платит за каждую машину отдельно, а в момент перевода денег в сделке остаётся без проверки. Обременение и расхождения в данных всплывают уже после того, как деньги внесены.</p>
+    </div>
+
+    <div class="scroller">
+      <div class="grid">
+        <div class="lane corner">Этап</div>
+        <div class="stage"><span class="num">01</span><h3>Ищет авто</h3><p class="where">Kolesa.kz, Mycar, Instagram, Telegram</p></div>
+        <div class="stage"><span class="num">02</span><h3>Проверяет историю</h3><p class="where">eGov, Kolesa, Autocheck, боты</p></div>
+        <div class="stage"><span class="num">03</span><h3>Осмотр и торг</h3><p class="where">Офлайн, СТО</p></div>
+        <div class="stage risk"><span class="num">04</span><h3>Сделка: переводит деньги</h3><p class="where">Приложение БЦК, eGov</p></div>
+        <div class="stage risk"><span class="num">05</span><h3>Постановка на учёт</h3><p class="where">Госорган, приложение</p></div>
+        <div class="stage"><span class="num">06</span><h3>После сделки</h3><p class="where">Поддержка, отзывы</p></div>
+
+        <div class="lane">Действия</div>
+        <div class="cell"><ul><li>Листает объявления, пишет продавцу</li><li>Сравнивает цену с рынком</li></ul></div>
+        <div class="cell"><ul><li>Просит у продавца госномер и техпаспорт</li><li>Логинится на eGov, ищет «Историю владения авто»</li><li>Или покупает отчёт Kolesa за 990 ₸, или идёт на Autocheck</li><li>Часть покупателей не проверяет вовсе</li></ul></div>
+        <div class="cell"><ul><li>Едет на осмотр</li><li>Торгуется «на глаз»</li></ul></div>
+        <div class="cell"><ul><li>Продавец снимает авто с учёта и указывает цену</li><li>Покупатель вносит сумму на спецсчёт</li><li>Подаёт заявку на постановку на учёт</li></ul></div>
+        <div class="cell"><ul><li>Ждёт решения госоргана около часа</li><li>При отказе разбирается, что с деньгами</li></ul></div>
+        <div class="cell"><ul><li>Ездит, узнаёт про ДТП, пробег, старые штрафы</li><li>Пишет в поддержку банка</li></ul></div>
+
+        <div class="lane">Каналы</div>
+        <div class="cell">Маркетплейсы объявлений, мессенджеры</div>
+        <div class="cell">eGov (нужен логин, госномер и техпаспорт), Kolesa из объявления, сайт Autocheck, Telegram-боты, «знакомые»</div>
+        <div class="cell">Личная встреча, СТО, бумажка или скриншот из другого приложения</div>
+        <div class="cell">Приложение БЦК, сделка «Переоформление авто»</div>
+        <div class="cell">Уведомление в приложении, eGov</div>
+        <div class="cell">Чат поддержки, отзывы в сторах</div>
+
+        <div class="lane">Мысли</div>
+        <div class="cell"><p class="q">Цена хорошая. Почему так дёшево?</p></div>
+        <div class="cell"><p class="q">Продавец не даёт техпаспорт, значит что-то скрывает</p><p class="q">eGov не показывает ДТП. Опять платить 990</p></div>
+        <div class="cell"><p class="q">Вроде нормальная. По памяти владельцев было два</p></div>
+        <div class="cell"><p class="q">Деньги ушли, а я до сих пор не уверен, что авто чистое</p></div>
+        <div class="cell"><p class="q">Почему отказ? Что теперь с деньгами?</p></div>
+        <div class="cell"><p class="q">Банк же проводил сделку. Почему не предупредили?</p></div>
+
+        <div class="lane">Эмоция</div>
+        <div class="cell emo"><span class="face">😐</span><span>Интерес с настороженностью<br><span class="lvl">3 / 5</span></span></div>
+        <div class="cell emo"><span class="face">😟</span><span>Тревога, раздражение<br><span class="lvl">2 / 5</span></span></div>
+        <div class="cell emo"><span class="face">😕</span><span>Неуверенность<br><span class="lvl">3 / 5</span></span></div>
+        <div class="cell emo"><span class="face">😰</span><span>Страх за деньги<br><span class="lvl">1 / 5</span></span></div>
+        <div class="cell emo"><span class="face">😡</span><span>Злость при отказе<br><span class="lvl">1 / 5</span></span></div>
+        <div class="cell emo"><span class="face">😠</span><span>Обида на банк<br><span class="lvl">2 / 5</span></span></div>
+
+        <div class="lane"></div>
+        <div class="curve-wrap"><svg class="curve" data-values="3,2,3,1,1,2" role="img" aria-label="Кривая эмоций: падает к шагу перевода денег"></svg></div>
+
+        <div class="lane">Боли</div>
+        <div class="cell pain"><ul><li>Нет быстрого способа отсеять проблемные авто из списка</li></ul></div>
+        <div class="cell pain"><ul><li>Три-четыре разрозненных источника</li><li>Оплата за каждую машину</li><li>eGov без ДТП и штрафов, с логином</li><li>Продавец может не дать техпаспорт</li></ul></div>
+        <div class="cell pain"><ul><li>Отчёт не под рукой</li><li>Нет фактов для торга</li></ul></div>
+        <div class="cell pain"><ul><li>Перевод «вслепую»: проверка не встроена в шаг максимального риска</li><li>Продавец не знает, что увидит покупатель</li></ul></div>
+        <div class="cell pain"><ul><li>Обременение и расхождения выявляются после перевода</li><li>Возврат, холдирование, спор сторон</li></ul></div>
+        <div class="cell pain"><ul><li>Претензии к банку за то, за что банк не отвечает</li><li>Негатив переносится на сделку</li></ul></div>
+
+        <div class="lane">Что видит банк</div>
+        <div class="cell">Ничего: клиент вне нашего контура</div>
+        <div class="cell">Ничего: проверка в чужих сервисах</div>
+        <div class="cell">Ничего</div>
+        <div class="cell">Создание сделки, внесение средств. Данных об авто нет</div>
+        <div class="cell">Отмены, возвраты, холдирование средств (боль из бэклога), обращения</div>
+        <div class="cell">NPS сделки, обращения, отзывы</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TO BE ===================== -->
+  <section class="map" id="to-be">
+    <div class="map-head">
+      <span class="tag tag-next">Как будет с Autocheck</span>
+      <h2>Проверка встроена в приложение и срабатывает до перевода денег</h2>
+      <p>Бесплатное превью Autocheck (владельцы, обременение, техданные) доступно в миниаппе и в сделке. Полный отчёт внутри сделки оплачивает Розница, вне сделки покупает клиент. Риск снимается на шаге, где раньше он был максимальным.</p>
+    </div>
+
+    <div class="scroller">
+      <div class="grid">
+        <div class="lane corner">Этап</div>
+        <div class="stage"><span class="num">01</span><h3>Ищет авто</h3><p class="where">Миниапп «Проверка авто»</p></div>
+        <div class="stage"><span class="num">02</span><h3>Проверяет глубже</h3><p class="where">Миниапп, по желанию</p></div>
+        <div class="stage"><span class="num">03</span><h3>Осмотр и торг</h3><p class="where">Офлайн, отчёт в телефоне</p></div>
+        <div class="stage safe"><span class="num">04</span><h3>Сделка: шаг до перевода</h3><p class="where">Приложение БЦК</p></div>
+        <div class="stage safe"><span class="num">05</span><h3>Перевод и учёт</h3><p class="where">Приложение, госорган</p></div>
+        <div class="stage"><span class="num">06</span><h3>После сделки</h3><p class="where">Карточка сделки, поддержка</p></div>
+
+        <div class="lane">Действия</div>
+        <div class="cell"><ul><li>Открывает миниапп, вводит VIN или госномер с техпаспортом из объявления</li><li>Видит бесплатное превью: владельцы, обременение, техданные</li></ul></div>
+        <div class="cell"><ul><li>Покупает полный отчёт в один тап со счёта</li><li>Отчёт сохраняется в «Мои отчёты»</li></ul></div>
+        <div class="cell"><ul><li>Сверяет цвет, мощность, год с отчётом</li><li>Торгуется по фактам: владельцы, ДТП</li></ul></div>
+        <div class="cell"><ul><li>Продавец при создании сделки видит превью по своему авто и даёт согласие в оферте</li><li>Покупатель до перевода видит блок «Проверка авто» и сравнение с заявленными данными</li><li>Нажимает «Полный отчёт», бесплатно для него</li></ul></div>
+        <div class="cell"><ul><li>Вносит деньги на спецсчёт</li><li>Подаёт заявку, госорган регистрирует</li></ul></div>
+        <div class="cell"><ul><li>Открывает отчёт из карточки сделки в любое время</li><li>Спорные вопросы решает по отчёту</li></ul></div>
+
+        <div class="lane">Каналы</div>
+        <div class="cell">Миниапп в приложении БЦК</div>
+        <div class="cell">Миниапп, оплата со счёта, чек в приложении</div>
+        <div class="cell">Отчёт в приложении, webview</div>
+        <div class="cell">Экран сделки, блок «Проверка авто», webview отчёта</div>
+        <div class="cell">Экран сделки, уведомления</div>
+        <div class="cell">Карточка сделки у обеих сторон, поддержка с <span class="ev">report_id</span></div>
+
+        <div class="lane">Мысли</div>
+        <div class="cell"><p class="q">Два владельца, без обременения. Можно ехать смотреть</p></div>
+        <div class="cell"><p class="q">Дешевле, чем съездить зря</p></div>
+        <div class="cell"><p class="q">В отчёте одно ДТП. Сбиваю цену</p></div>
+        <div class="cell"><p class="q">Банк проверил до того, как я перевёл деньги</p></div>
+        <div class="cell"><p class="q">Регистрация прошла, сюрпризов не будет</p></div>
+        <div class="cell"><p class="q">Отчёт всегда под рукой, если что</p></div>
+
+        <div class="lane">Эмоция</div>
+        <div class="cell emo"><span class="face">🙂</span><span>Контроль с первого шага<br><span class="lvl">4 / 5</span></span></div>
+        <div class="cell emo"><span class="face">😌</span><span>Спокойствие<br><span class="lvl">4 / 5</span></span></div>
+        <div class="cell emo"><span class="face">🙂</span><span>Уверенность в торге<br><span class="lvl">4 / 5</span></span></div>
+        <div class="cell emo"><span class="face">😌</span><span>Риск снят до денег<br><span class="lvl">5 / 5</span></span></div>
+        <div class="cell emo"><span class="face">😊</span><span>Без сюрпризов<br><span class="lvl">5 / 5</span></span></div>
+        <div class="cell emo"><span class="face">😊</span><span>Доверие к сделке<br><span class="lvl">4 / 5</span></span></div>
+
+        <div class="lane"></div>
+        <div class="curve-wrap"><svg class="curve" data-values="4,4,4,5,5,4" role="img" aria-label="Кривая эмоций: ровная и высокая, пик на шаге сделки"></svg></div>
+
+        <div class="lane">Что нового</div>
+        <div class="cell gain"><ul><li>Бесплатное превью внутри приложения, без логина на eGov</li><li>Фильтр проблемных авто до осмотра</li></ul></div>
+        <div class="cell gain"><ul><li>Отчёт и чек в приложении</li><li>Автовозврат, если отчёт не собрался</li></ul></div>
+        <div class="cell gain"><ul><li>Факты для торга в одном месте</li></ul></div>
+        <div class="cell gain"><ul><li>Проверка встроена в момент максимального риска</li><li>Красный флаг при обременении: отмена до перевода</li><li>Продавец знает, что увидит покупатель</li></ul></div>
+        <div class="cell gain"><ul><li>Меньше отказов госоргана, возвратов и холдирования</li></ul></div>
+        <div class="cell gain"><ul><li>Постоянная ссылка на отчёт, без повторного списания</li><li>Жалобы на данные уходят в Autocheck по регламенту</li></ul></div>
+
+        <div class="lane">Кто платит</div>
+        <div class="cell"><span class="pay none">Никто <span class="amt">0 ₸</span></span><span style="color:var(--muted);font-size:12px">Превью не списывает баланс</span></div>
+        <div class="cell"><span class="pay client">Клиент <span class="amt">990–1 490 ₸</span></span><span style="color:var(--muted);font-size:12px">Себестоимость ~80 ₸, цена проверяется A/B</span></div>
+        <div class="cell"><span class="pay none">Никто <span class="amt">0 ₸</span></span><span style="color:var(--muted);font-size:12px">Повторное открытие бесплатно</span></div>
+        <div class="cell"><span class="pay retail">Розница <span class="amt">~80 ₸</span></span><span style="color:var(--muted);font-size:12px">Один отчёт на сделку, месячный лимит</span></div>
+        <div class="cell"><span class="pay none">Никто <span class="amt">0 ₸</span></span></div>
+        <div class="cell"><span class="pay none">Никто <span class="amt">0 ₸</span></span></div>
+
+        <div class="lane">Метрики</div>
+        <div class="cell"><span class="ev">vehicle_check.preview_completed</span><span style="color:var(--muted);font-size:12px">entry_point = miniapp, result, has_restriction</span></div>
+        <div class="cell"><span class="ev">vehicle_check.report_purchased</span><span style="color:var(--muted);font-size:12px">payer = client, price_variant. Конверсия превью в покупку ≥ 8%</span></div>
+        <div class="cell"><span class="ev">vehicle_check.report_opened</span><span style="color:var(--muted);font-size:12px">Повторные открытия, first_open</span></div>
+        <div class="cell"><span class="ev">vehicle_check.preview_completed</span><span class="ev">vehicle_check.report_purchased</span><span style="color:var(--muted);font-size:12px">entry_point = deal_buyer, payer = retail_bu, model_mismatch. Превью до оплаты ≥ 70% сделок</span></div>
+        <div class="cell"><span class="ev">vehicle_check_level</span><span style="color:var(--muted);font-size:12px">На событиях сделки. Возвраты после внесения средств минус 20%</span></div>
+        <div class="cell"><span style="color:var(--muted);font-size:12px">Обращения по теме «обременение» и «не та машина» минус 30%. NPS сделки плюс 5</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== DELTA ===================== -->
+  <section class="delta" id="delta">
+    <div class="delta-head">
+      <h2>Что меняется</h2>
+      <p>Главный сдвиг не в наборе данных, а в моменте проверки: она переезжает из чужих сервисов в шаг сделки перед переводом денег.</p>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Критерий</th><th>Как сейчас</th><th>Как будет с Autocheck</th></tr></thead>
+        <tbody>
+          <tr><td>Где проверка</td><td class="now">eGov, Kolesa, сайт Autocheck, боты</td><td class="next">В приложении: миниапп и экран сделки</td></tr>
+          <tr><td>Момент проверки</td><td class="now">До сделки, по инициативе клиента. В сделке проверки нет</td><td class="next">Автоматически на шаге до перевода денег, плюс в любой момент в миниаппе</td></tr>
+          <tr><td>Цена для клиента</td><td class="now">990 ₸ за отчёт на Kolesa, бесплатно на eGov с логином</td><td class="next">Превью 0 ₸. В сделке полный отчёт 0 ₸. Вне сделки 990–1 490 ₸</td></tr>
+          <tr><td>Кто платит</td><td class="now">Клиент, за каждую машину</td><td class="next">В сделке Розница, около 80 ₸ за отчёт. Вне сделки клиент</td></tr>
+          <tr><td>Что показывает</td><td class="now">eGov: владельцы и обременение. Kolesa: плюс ДТП, штрафы, бюро</td><td class="next">Превью: владельцы, обременение, совладельцы, газ, техданные. Полный отчёт: состав по договору с Autocheck</td></tr>
+          <tr><td>Продавец</td><td class="now">Не знает, что увидит покупатель</td><td class="next">Видит превью по своему авто при создании сделки, даёт согласие в оферте</td></tr>
+          <tr><td>Когда всплывает обременение</td><td class="now">После перевода денег, при отказе госоргана</td><td class="next">До перевода денег, красный флаг в блоке проверки</td></tr>
+          <tr><td>Что видит банк</td><td class="now">Только отмены, возвраты и обращения</td><td class="next">Воронка проверки, доля сделок с отчётом, влияние на возвраты и NPS</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="takeaways">
+      <div class="take"><span class="big">0 ₸</span><h3>Превью закрывает главный страх</h3><p>Владельцы, обременение и техданные приходят бесплатно. Платить нужно только за глубокую проверку.</p></div>
+      <div class="take"><span class="big">Шаг 04</span><h3>Проверка переезжает в точку риска</h3><p>Сегодня кривая эмоций падает на переводе денег. С Autocheck это самый спокойный шаг сделки.</p></div>
+      <div class="take"><span class="big">~80 ₸</span><h3>Цена одной сделки для Розницы</h3><p>Один отчёт на сделку против стоимости возврата, холдирования и спора. Вне сделки платит клиент.</p></div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Факты по API из технической инструкции «Подключение к Autocheck B2B API». Сравнение с eGov и Kolesa по открытым публикациям. Объёмы, конверсии и цена отчёта являются оценками и уточняются по данным аналитики и договору.</p>
+    <p>Связанные документы: письмо с вариантами, PRD, события аналитики.</p>
+  </footer>
+
+</div>
+
+<script>
+  (function () {
+    function draw() {
+      document.querySelectorAll('svg.curve').forEach(function (svg) {
+        var vals = (svg.getAttribute('data-values') || '').split(',').map(Number).filter(function (v) { return !isNaN(v); });
+        if (!vals.length) return;
+        var w = svg.clientWidth || 1200, h = 72, n = vals.length, colW = w / n;
+        svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+        var y = function (v) { return 10 + (5 - v) * ((h - 20) / 4); };
+        var pts = vals.map(function (v, i) { return [(i + 0.5) * colW, y(v)]; });
+        var d = 'M ' + pts[0][0] + ' ' + pts[0][1];
+        for (var i = 1; i < pts.length; i++) {
+          var x0 = pts[i - 1][0], y0 = pts[i - 1][1], x1 = pts[i][0], y1 = pts[i][1], mx = (x0 + x1) / 2;
+          d += ' C ' + mx + ' ' + y0 + ', ' + mx + ' ' + y1 + ', ' + x1 + ' ' + y1;
+        }
+        var html = '<line class="mid" x1="0" y1="' + y(3) + '" x2="' + w + '" y2="' + y(3) + '" style="stroke:var(--line)"/>';
+        html += '<path d="' + d + '" fill="none" style="stroke:var(--muted)" stroke-width="2.5" stroke-linecap="round"/>';
+        pts.forEach(function (p, i) {
+          var c = vals[i] <= 2 ? 'var(--pain)' : vals[i] >= 4 ? 'var(--gain)' : 'var(--warn)';
+          html += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="6" style="fill:' + c + ';stroke:var(--surface);stroke-width:2"/>';
+        });
+        svg.innerHTML = html;
+      });
+    }
+    draw();
+    window.addEventListener('resize', draw);
+    if (document.fonts && document.fonts.ready) { document.fonts.ready.then(draw); }
+  })();
+</script>
