@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Миниапп: ошибка ввода</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0;font-family:'Golos Text',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#121A26;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:#0B57C9;text-decoration:none}a:hover{color:#09479F}
+</style>
+</helmet>
+<div style="width:390px;height:844px;background:#F4F6F9;display:flex;flex-direction:column;overflow:hidden;font-family:'Golos Text',system-ui,sans-serif;color:#121A26">
+
+  <div style="height:56px;display:flex;align-items:center;gap:4px;padding:0 12px 0 4px;background:#FFFFFF;border-bottom:1px solid #E3E8EE;flex-shrink:0">
+    <button type="button" aria-label="Назад" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:transparent;border:0;color:#121A26;cursor:pointer;padding:0">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <span style="font-size:16px;font-weight:600;line-height:20px">Проверка авто</span>
+  </div>
+
+  <div style="flex:1 1 auto;overflow:auto;padding:16px 16px 20px;display:flex;flex-direction:column;gap:12px">
+
+    <div style="background:#E6EEFB;border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:center">
+      <span style="width:40px;height:40px;border-radius:12px;background:#FFFFFF;color:#0B57C9;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 17h14l1-6-2-5H6L4 11l1 6z"/><circle cx="7.5" cy="17.5" r="1.5"/><circle cx="16.5" cy="17.5" r="1.5"/></svg>
+      </span>
+      <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+        <span style="font-size:15px;font-weight:700;line-height:20px">Проверьте авто до осмотра</span>
+        <span style="font-size:12px;color:#5F6B79;line-height:16px">Превью бесплатно. Полный отчёт 990 ₸</span>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:4px;padding:4px;background:#E3E8EE;border-radius:12px">
+      <button type="button" style="height:36px;border-radius:9px;background:#FFFFFF;color:#121A26;font-size:14px;font-weight:600;border:0;font-family:inherit;cursor:pointer">По госномеру</button>
+      <button type="button" style="height:36px;border-radius:9px;background:transparent;color:#5F6B79;font-size:14px;font-weight:600;border:0;font-family:inherit;cursor:pointer">По VIN</button>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <label for="grnz-err" style="font-size:12px;font-weight:600;color:#5F6B79;line-height:15px;padding-left:2px">Госномер</label>
+      <input id="grnz-err" type="text" value="123ABC02" aria-invalid="true" style="height:52px;border-radius:12px;border:1.5px solid #B32E24;background:#FFFFFF;padding:0 14px;font-size:17px;font-weight:600;letter-spacing:0.04em;font-family:inherit;color:#121A26;width:100%">
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <label for="srts-err" style="font-size:12px;font-weight:600;color:#5F6B79;line-height:15px;padding-left:2px">Номер техпаспорта</label>
+      <input id="srts-err" type="text" value="AB98765432" aria-invalid="true" style="height:52px;border-radius:12px;border:1.5px solid #B32E24;background:#FFFFFF;padding:0 14px;font-size:17px;font-weight:600;letter-spacing:0.04em;font-family:inherit;color:#121A26;width:100%">
+      <div style="display:flex;gap:8px;align-items:flex-start;padding:2px 2px 0">
+        <span style="color:#B32E24;flex-shrink:0;display:flex;margin-top:1px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+        </span>
+        <span style="font-size:12px;line-height:16px;color:#B32E24">Госномер и техпаспорт относятся к разным авто. Проверьте оба значения у продавца или введите VIN.</span>
+      </div>
+    </div>
+
+    <button type="button" disabled style="height:52px;border-radius:12px;background:#D3DBE4;color:#5F6B79;font-size:16px;font-weight:600;border:0;font-family:inherit">Проверить бесплатно</button>
+
+    <div style="background:#FFFFFF;border-radius:14px;padding:12px 16px;display:flex;flex-direction:column;gap:8px;box-shadow:0 1px 2px rgba(18,26,38,0.06)">
+      <span style="font-size:13px;font-weight:600;line-height:17px">Частые причины</span>
+      <ul style="margin:0;padding-left:16px;font-size:12px;line-height:16px;color:#121A26;display:flex;flex-direction:column;gap:4px">
+        <li>Продавец прислал техпаспорт от другой машины</li>
+        <li>Перепутаны буквы: кириллица вместо латиницы в госномере</li>
+        <li>Дипломатические и консульские номера не проверяются, нужен VIN</li>
+      </ul>
+    </div>
+
+    <span style="font-size:11px;color:#5F6B79;line-height:15px;padding:0 2px">За ошибочные запросы ничего не списывается. Если источник недоступен, повторите через 1–5 минут.</span>
+
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
